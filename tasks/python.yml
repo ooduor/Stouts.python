@@ -18,9 +18,9 @@
     executable: pip3  
 
 # https://stackoverflow.com/a/44456282/754432
-- pip:
-    virtualenv: /tmp/py3
-    virtualenv_command: /usr/bin/python3 -m venv
+# - pip:
+#     virtualenv: /tmp/py3
+#     virtualenv_command: /usr/bin/python3 -m venv
 
 # - name: Update tools
 #   pip: name="setuptools virtualenv" state=latest executable=pip{{item.item}}
@@ -34,20 +34,20 @@
   when: python_install
   with_items: "{{ python_versions }}"
 
-- name: Install virtualenv
-  pip: name="virtualenv" executable={{python_pkg_bin}}/pip{{item}}
-  when: not( (python_virtualenvs is undefined) or (python_virtualenvs is none) or (python_virtualenvs | trim == '') )
-  with_items: "{{ python_versions }}"
+# - name: Install virtualenv
+#   pip: name="virtualenv" executable={{python_pkg_bin}}/pip{{item}}
+#   when: not( (python_virtualenvs is undefined) or (python_virtualenvs is none) or (python_virtualenvs | trim == '') )
+#   with_items: "{{ python_versions }}"
 
 - name: Setup virtualenvs
-  shell: virtualenv {{item.path}} --python={{item.python|default('python')}}
+  shell: /usr/bin/python3 -m venv {{item.path}}
   args:
     creates: "{{item.path}}"
   with_items: "{{ python_virtualenvs }}"
   when: "python_virtualenv_user is not defined"
 
 - name: Setup virtualenvs for specific user
-  shell: virtualenv {{item.path}} --python={{item.python|default('python')}}
+  shell: "{{item.python|default('python')}} -m venv {{item.path}}"
   args:
     creates: "{{item.path}}"
   with_items: "{{ python_virtualenvs }}"
